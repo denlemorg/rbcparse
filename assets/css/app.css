@@ -1,0 +1,10 @@
+body {
+    background-color: lightgray;
+}
+
+.example-wrapper { margin: 3em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+.example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+.block_news_title {float: none; clear: both; width: 100%;display: block; height: 100px;}
+.list_news_title {float: left; display: block;}
+.button_update {height: 50px;font-size: 19px;cursor: pointer;}
+.a_button_update {float: right;}

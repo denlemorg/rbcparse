@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Articles!{% endblock %}
+
+{% block body %}
+
+    <div class="example-wrapper">
+        <div class="block_news_title">
+            <h1 class="list_news_title">Список новостей</h1>
+            <a href="{{ path('posts', {'update': "1"}) }}" class="a_button_update">
+                    <button type="button" class="btn btn-success button_update" >Обновить новости с RBC.ru</button>
+            </a>
+        </div><br />
+
+            {% for post in posts %}
+                <a href="{{ path('post_show', {'id': post.id}) }}">{{ post.title |raw}}</a><br>
+                {% set textNews = post.body |slice(0, 200) ~ '...' %}
+                {{ textNews |raw }}<br>
+                <a href="{{ path('post_show', {'id': post.id}) }}" style="font-size: 15px">Подробнее..</a><br>
+                <br>
+            {% endfor %}
+    </div>
+{% endblock %}

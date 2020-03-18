@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Article{% endblock %}
+
+{% block body %}
+
+    <div class="example-wrapper">
+        <h1>{{ post.title |raw }}</h1><br>
+        {%  if post.image != '' %}
+            <img src="{{ post.image }}" style="max-width: 700px;" /><br>
+        {% endif %}
+        {{ post.body |raw }}<br>
+        <a href="{{ path('posts') }}" style="font-size: 15px">Назад..</a><br>
+        <br>
+    </div>
+{% endblock %}

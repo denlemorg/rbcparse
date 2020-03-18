@@ -1,0 +1,85 @@
+<?php
+
+
+namespace App\Service\ParseNews;
+
+
+use PHPHtmlParser\Dom;
+
+class RegularItem implements ParsedNewsInterface
+{
+    private $title;
+    private $image;
+    private $body;
+    private $link;
+    private $date;
+    private $dom;
+
+    public function __construct(Dom $dom, $link, $date){
+        $this->link = $link;
+        $this->dom = $dom;
+        $this->date = $date;
+    }
+    public function parseNewsItem(){
+        $this->parseTitle();
+        $this->parseImg();
+        $this->parseContent();
+    }
+
+    private function parseTitle(){
+        try {
+            $artTitle = $this->dom->find(".js-rbcslider")[0]->find('.article__header .article__header__title .js-slide-title')->innerHtml;
+            $this->title = $artTitle;
+        }catch(\Exception $e){
+            $this->title = "";
+        }
+    }
+
+    private function parseImg(){
+        try {
+            $artImg = $this->dom->find(".js-rbcslider")[0]->find('.article__text .article__main-image img');
+            $this->image = $artImg->getAttribute('src');
+        }catch(\Exception $e){
+            $this->image =  "";
+        }
+    }
+
+    private function parseContent(){
+        try {
+            $artContents = $this->dom->find(".js-rbcslider")[0]->find('.article .article__text');
+            $html = "";
+            $domContent = new Dom();
+            foreach ($artContents as $content)
+            {
+                $domContent->load($content);
+                $artStrings = $domContent->find("p");
+                foreach ($artStrings as $string) {
+                    $str = strip_tags($string->innerHtml);
+                    $html .= "<br />" . trim($str);
+                }
+            }
+            $this->body = $html;
+        }catch(\Exception $e){
+            $this->body = "";
+        }
+    }
+
+    public function setLink($link){
+        $this->link = $link;
+    }
+    public function getTitle(){
+        return $this->title;
+    }
+    public function getImage(){
+        return $this->image;
+    }
+    public function getBody(){
+        return $this->body;
+    }
+    public function getLink(){
+        return $this->body;
+    }
+    public function getDate(){
+        return $this->date;
+    }
+}
