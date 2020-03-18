@@ -73,9 +73,6 @@ class RbcParseClient
             }else {
                 $currentNewsItem = new RegularItem($this->dom, $link, $date);
             }
-//            if (!preg_match("/style.rbc/", $link) && !preg_match("/agrodigital.rbc/", $link) ) {
-//                $currentNewsItem = new RegularItem($this->dom, $link, $date);
-//            }
             $currentNewsItem->parseNewsItem($link);
 
 //            print $currentNewsItem->getTitle() . "<br />";
