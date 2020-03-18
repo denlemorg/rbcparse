@@ -6,26 +6,13 @@ namespace App\Service\ParseNews;
 
 use PHPHtmlParser\Dom;
 
-class RegularItem implements ParsedNewsInterface
+class RegularItem extends AbstractParseManager
 {
-    private $title;
-    private $image;
-    private $body;
-    private $link;
-    private $date;
-    private $dom;
-
-    public function __construct(Dom $dom, $link, $date){
-        $this->link = $link;
-        $this->dom = $dom;
-        $this->date = $date;
-    }
     public function parseNewsItem(){
         $this->parseTitle();
         $this->parseImg();
         $this->parseContent();
     }
-
     private function parseTitle(){
         try {
             $artTitle = $this->dom->find(".js-rbcslider")[0]->find('.article__header .article__header__title .js-slide-title')->innerHtml;
@@ -64,22 +51,4 @@ class RegularItem implements ParsedNewsInterface
         }
     }
 
-    public function setLink($link){
-        $this->link = $link;
-    }
-    public function getTitle(){
-        return $this->title;
-    }
-    public function getImage(){
-        return $this->image;
-    }
-    public function getBody(){
-        return $this->body;
-    }
-    public function getLink(){
-        return $this->body;
-    }
-    public function getDate(){
-        return $this->date;
-    }
 }

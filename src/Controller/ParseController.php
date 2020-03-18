@@ -5,7 +5,7 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Service\ParseNews\RbcParse;
+use App\Service\ParseNews\RbcParseClient;
 
 class ParseController extends AbstractController
 {
@@ -14,7 +14,7 @@ class ParseController extends AbstractController
      * @param RbcParse $parse
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function index(RbcParse $parse)
+    public function index(RbcParseClient $parse)
     {
         $parse->updateNews();
         exit();

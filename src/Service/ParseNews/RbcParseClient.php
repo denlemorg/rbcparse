@@ -7,7 +7,7 @@ use PHPHtmlParser\Dom;
 use GuzzleHttp\Client;
 
 
-class RbcParse
+class RbcParseClient
 {
     private $dom;
     private $em;
@@ -18,7 +18,7 @@ class RbcParse
         $this->em = $em;
     }
 
-    public function inputNews(ParsedNewsInterface $currentNewsItem){
+    public function inputNews(AbstractParseManager $currentNewsItem){
 
         $sql = '
             REPLACE INTO
@@ -73,6 +73,9 @@ class RbcParse
             }else {
                 $currentNewsItem = new RegularItem($this->dom, $link, $date);
             }
+//            if (!preg_match("/style.rbc/", $link) && !preg_match("/agrodigital.rbc/", $link) ) {
+//                $currentNewsItem = new RegularItem($this->dom, $link, $date);
+//            }
             $currentNewsItem->parseNewsItem($link);
 
 //            print $currentNewsItem->getTitle() . "<br />";
