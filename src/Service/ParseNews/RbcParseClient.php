@@ -56,7 +56,7 @@ class RbcParseClient
 
             $date = new \DateTime("now");
             $timeSet = explode(":",$time);
-            $date->setTime($timeSet[0], $timeSet[1]);
+            $date->setTime((int)$timeSet[0], (int)$timeSet[1]);
 
             $link = $content->getAttribute('href');
 
