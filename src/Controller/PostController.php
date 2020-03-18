@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Post;
-use App\Service\ParseNews\RbcParse;
+use App\Service\ParseNews\RbcParseClient;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -19,7 +19,7 @@ class PostController extends AbstractController
     /**
      * @Route("/", name="posts")
      */
-    public function index(Request $request, RbcParse $parse)
+    public function index(Request $request, RbcParseClient $parse)
     {
         if ($request->query->get('update') && $request->query->get('update') == '1'){
             $parse->updateNews();
