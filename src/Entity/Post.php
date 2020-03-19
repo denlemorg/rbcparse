@@ -41,6 +41,11 @@ class Post
      */
     private $created_at;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $position;
+
 
 
     public function getId(): ?int
@@ -108,4 +113,15 @@ class Post
         return $this;
     }
 
+    public function getPosition(): ?int
+    {
+        return $this->position;
+    }
+
+    public function setPosition(string $position): self
+    {
+        $this->position = $position;
+
+        return $this;
+    }
 }

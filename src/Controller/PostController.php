@@ -23,6 +23,7 @@ class PostController extends AbstractController
     {
         if ($request->query->get('update') && $request->query->get('update') == '1'){
             $parse->updateNews();
+//            exit();
         }
         $posts = $this->postRepository->findLastNews();
         return $this->render('post/posts.html.twig', [

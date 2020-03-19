@@ -22,14 +22,16 @@ class RbcParseClient
 
         $sql = '
             REPLACE INTO
-                post (title, body, image, link, created_at)
+                post (title, body, image, link, created_at, position)
             VALUES
-                (:title, :body, :image, :link, :created_at)
+                (:title, :body, :image, :link, :created_at, :position)
         ';
 
 //        $date = new \DateTime("now");
         $date = $currentNewsItem->getDate();
         $created_at = $date->format('Y-m-d H:i:s');
+
+        $position = $date->format('U');
 
         $this->em->getConnection()
             ->prepare($sql)
@@ -38,7 +40,8 @@ class RbcParseClient
                 'body' => $currentNewsItem->getBody(),
                 'image' => $currentNewsItem->getImage(),
                 'link' => $currentNewsItem->getLink(),
-                'created_at' => $created_at
+                'created_at' => $created_at,
+                'position' => $position
             ]);
     }
 

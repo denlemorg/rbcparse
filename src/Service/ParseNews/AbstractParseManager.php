@@ -22,9 +22,6 @@ abstract class AbstractParseManager
     }
     abstract public function parseNewsItem();
 
-    public function setLink($link){
-        $this->link = $link;
-    }
     public function getTitle(){
         return $this->title;
     }
@@ -35,7 +32,7 @@ abstract class AbstractParseManager
         return $this->body;
     }
     public function getLink(){
-        return $this->body;
+        return $this->link;
     }
     public function getDate(){
         return $this->date;
