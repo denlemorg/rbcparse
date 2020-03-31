@@ -2,6 +2,7 @@
 
 namespace App\Service\ParseNews;
 
+use App\Entity\Post;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPHtmlParser\Dom;
 use GuzzleHttp\Client;
@@ -11,43 +12,34 @@ class RbcParseClient
 {
     private $dom;
     private $em;
+    private $checkPosts;
 
     public function __construct(EntityManagerInterface $em)
     {
         $this->dom = new Dom();
         $this->em = $em;
+        $postRepository = $this->em->getRepository(Post::class);
+        $this->checkPosts = $postRepository->findLastNews();
     }
 
-    public function inputNews(AbstractParseManager $currentNewsItem){
 
-        $sql = '
-            REPLACE INTO
-                post (title, body, image, link, created_at, position)
-            VALUES
-                (:title, :body, :image, :link, :created_at, :position)
-        ';
-
-//        $date = new \DateTime("now");
-        $date = $currentNewsItem->getDate();
-        $created_at = $date->format('Y-m-d H:i:s');
-
-        $position = $date->format('U');
-
-        $this->em->getConnection()
-            ->prepare($sql)
-            ->execute([
-                'title' => $currentNewsItem->getTitle(),
-                'body' => $currentNewsItem->getBody(),
-                'image' => $currentNewsItem->getImage(),
-                'link' => $currentNewsItem->getLink(),
-                'created_at' => $created_at,
-                'position' => $position
-            ]);
+    private function getPostEntity(string $title): Post
+    {
+        $postObj = new Post();
+        if (count($this->checkPosts) > 0){
+            foreach($this->checkPosts as $checkPost){
+                if ($checkPost->getTitle() == $title){
+                    $postObj = $checkPost;
+                    break;
+                }
+            }
+        }
+        return $postObj;
     }
 
-    public function updateNews(){
+    public function updateNews(): void
+    {
         $res = $this->getUrlContent('https://www.rbc.ru');
-
         $this->dom->load($res);
         $contents = $this->dom->find('.news-feed__wrapper .js-news-feed-list')->find('a.news-feed__item');
 
@@ -63,9 +55,6 @@ class RbcParseClient
 
             $link = $content->getAttribute('href');
 
-//            $link = 'http://agrodigital.rbc.ru/?utm_source=rbc&utm_medium=main&utm_campaign=rsh20w-r-startupd-m';
-//            $link = 'https://realty.rbc.ru/news/5e71c0389a79477d27e0a3b8';
-
             $resArt = $this->getUrlContent($link);
             $this->dom->load($resArt);
 
@@ -73,34 +62,34 @@ class RbcParseClient
                 $currentNewsItem = new StyleItem($this->dom, $link, $date);
             }elseif(preg_match("/agrodigital.rbc/", $link)){
                 $currentNewsItem = new AgroItem($this->dom, $link, $date);
+//            }elseif(preg_match("/plus.rbc/", $link) || preg_match("/sport.rbc/", $link) || preg_match("/pro.rbc/", $link)){
+//                continue;
             }else {
                 $currentNewsItem = new RegularItem($this->dom, $link, $date);
             }
             $currentNewsItem->parseNewsItem($link);
 
-//            print $currentNewsItem->getTitle() . "<br />";
-            $this->inputNews($currentNewsItem);
+            $post = $this->getPostEntity($currentNewsItem->getTitle());
+            $date = $currentNewsItem->getDate();
+            $position = $date->format('U');
 
+            $post->setTitle($currentNewsItem->getTitle());
+            $post->setBody($currentNewsItem->getBody());
+            $post->setImage($currentNewsItem->getImage());
+            $post->setLink($currentNewsItem->getLink());
+            $post->setCreatedAt($date);
+            $post->setPosition($position);
+
+            $this->em->persist($post);
         }
+        $this->em->flush();
     }
 
-    private function getUrlContent($url){
-
+    private function getUrlContent($url)
+    {
         $client = new Client([ 'base_uri' => $url ]);
         $response = $client->request('GET');
         $res = $response->getBody();
-
-//        $ch = curl_init('https://www.rbc.ru');
-//        $ch = curl_init($url);
-//
-//        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-//        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-//        curl_setopt($ch, CURLOPT_HTTPHEADER,
-//            [
-//                'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
-//                'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 YaBrowser/19.12.0.769 Yowser/2.5 Safari/537.36'
-//            ]);
-//        $res = curl_exec($ch);
 
         return $res;
     }
