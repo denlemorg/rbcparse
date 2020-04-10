@@ -14,6 +14,11 @@ use App\Repository\PostRepository;
 class PostController extends AbstractController
 {
     /**
+     * @var PostRepository
+     */
+    private $postRepository;
+
+    /**
      * @param PostRepository $postRepository
      * @return void
      */
@@ -27,6 +32,12 @@ class PostController extends AbstractController
      * @param Request $request
      * @param RbcParseClient $parse
      * @return Response
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \PHPHtmlParser\Exceptions\ChildNotFoundException
+     * @throws \PHPHtmlParser\Exceptions\CircularException
+     * @throws \PHPHtmlParser\Exceptions\CurlException
+     * @throws \PHPHtmlParser\Exceptions\NotLoadedException
+     * @throws \PHPHtmlParser\Exceptions\StrictException
      */
 
     public function index(Request $request, RbcParseClient $parse): Response

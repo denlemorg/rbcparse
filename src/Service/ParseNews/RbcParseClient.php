@@ -91,7 +91,7 @@ class RbcParseClient
                 $currentNewsItem = new StyleItem($this->dom, $link, $date);
             }elseif(preg_match("/agrodigital.rbc/", $link)){
                 $currentNewsItem = new AgroItem($this->dom, $link, $date);
-            }elseif(preg_match("/healthindex.rbc/", $link) ){
+            }elseif(preg_match("/healthindex.rbc/", $link) || preg_match("/gosmart.rbc/", $link)  ){
                 continue;
             }else {
                 $currentNewsItem = new RegularItem($this->dom, $link, $date);
@@ -111,6 +111,7 @@ class RbcParseClient
             $post->setPosition($position);
 
             $this->em->persist($post);
+
         }
         $this->em->flush();
     }
