@@ -7,13 +7,30 @@ use Doctrine\ORM\EntityManagerInterface;
 use PHPHtmlParser\Dom;
 use GuzzleHttp\Client;
 
-
+/**
+ * Service for parsing new in rbc.ru
+ *
+ * @author denlem <denislem@gmail.com>
+ */
 class RbcParseClient
 {
+    /**
+     * @var Dom
+     */
     private $dom;
+    /**
+     * @var EntityManagerInterface
+     */
     private $em;
+    /**
+     * @var Post[]
+     */
     private $checkPosts;
 
+    /**
+     * RbcParseClient constructor.
+     * @param EntityManagerInterface $em
+     */
     public function __construct(EntityManagerInterface $em)
     {
         $this->dom = new Dom();
@@ -22,7 +39,10 @@ class RbcParseClient
         $this->checkPosts = $postRepository->findLastNews();
     }
 
-
+    /**
+     * @param string $title
+     * @return Post
+     */
     private function getPostEntity(string $title): Post
     {
         $postObj = new Post();
@@ -37,6 +57,15 @@ class RbcParseClient
         return $postObj;
     }
 
+    /**
+     * @return void
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \PHPHtmlParser\Exceptions\ChildNotFoundException
+     * @throws \PHPHtmlParser\Exceptions\CircularException
+     * @throws \PHPHtmlParser\Exceptions\CurlException
+     * @throws \PHPHtmlParser\Exceptions\NotLoadedException
+     * @throws \PHPHtmlParser\Exceptions\StrictException
+     */
     public function updateNews(): void
     {
         $res = $this->getUrlContent('https://www.rbc.ru');
@@ -62,11 +91,12 @@ class RbcParseClient
                 $currentNewsItem = new StyleItem($this->dom, $link, $date);
             }elseif(preg_match("/agrodigital.rbc/", $link)){
                 $currentNewsItem = new AgroItem($this->dom, $link, $date);
-//            }elseif(preg_match("/plus.rbc/", $link) || preg_match("/sport.rbc/", $link) || preg_match("/pro.rbc/", $link)){
-//                continue;
+            }elseif(preg_match("/healthindex.rbc/", $link) ){
+                continue;
             }else {
                 $currentNewsItem = new RegularItem($this->dom, $link, $date);
             }
+
             $currentNewsItem->parseNewsItem($link);
 
             $post = $this->getPostEntity($currentNewsItem->getTitle());
@@ -85,12 +115,16 @@ class RbcParseClient
         $this->em->flush();
     }
 
-    private function getUrlContent($url)
+    /**
+     * @param string $url
+     * @return StreamInterface Returns the body as a stream.
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    private function getUrlContent(string $url): string
     {
         $client = new Client([ 'base_uri' => $url ]);
         $response = $client->request('GET');
         $res = $response->getBody();
-
         return $res;
     }
 }

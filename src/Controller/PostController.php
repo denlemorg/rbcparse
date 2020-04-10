@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Controller;
 
@@ -6,11 +7,16 @@ use App\Entity\Post;
 use App\Service\ParseNews\RbcParseClient;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\PostRepository;
 
 class PostController extends AbstractController
 {
+    /**
+     * @param PostRepository $postRepository
+     * @return void
+     */
     public function __construct(PostRepository $postRepository)
     {
         $this->postRepository = $postRepository;
@@ -18,8 +24,12 @@ class PostController extends AbstractController
 
     /**
      * @Route("/", name="posts")
+     * @param Request $request
+     * @param RbcParseClient $parse
+     * @return Response
      */
-    public function index(Request $request, RbcParseClient $parse)
+
+    public function index(Request $request, RbcParseClient $parse): Response
     {
         if ($request->query->get('update') && $request->query->get('update') == '1'){
             $parse->updateNews();
@@ -32,8 +42,10 @@ class PostController extends AbstractController
 
     /**
      * @Route("/posts/{id}", name="post_show")
+     * @param Post $post
+     * @return Response
      */
-    public function post(Post $post)
+    public function post(Post $post): Response
     {
         return $this->render('post/postshow.html.twig', [
             'post' => $post

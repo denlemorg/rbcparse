@@ -14,11 +14,18 @@ use Doctrine\Common\Persistence\ManagerRegistry;
  */
 class PostRepository extends ServiceEntityRepository
 {
+    /**
+     * PostRepository constructor.
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Post::class);
     }
 
+    /**
+     * @return Post[] Returns an array of Post objects
+     */
     public function findLastNews()
     {
         return $this->createQueryBuilder('p')

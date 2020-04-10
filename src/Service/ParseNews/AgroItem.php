@@ -8,12 +8,19 @@ use PHPHtmlParser\Dom;
 
 class AgroItem extends AbstractParseManager
 {
-    public function parseNewsItem(){
+    /**
+     * @return void
+     */
+    public function parseNewsItem(): void
+    {
         $this->parseTitle();
         $this->parseImg();
         $this->parseContent();
     }
 
+    /**
+     * @return void
+     */
     private function parseTitle(){
         try {
             $artTitle = $this->dom->find(".home__header")[0]->find('.home__title')->innerHtml;
@@ -23,6 +30,9 @@ class AgroItem extends AbstractParseManager
         }
     }
 
+    /**
+     * @return void
+     */
     private function parseImg(){
         try {
             $artImg = $this->dom->find(".home__header")[0]->find('.home__image img.for-desktop');
@@ -32,6 +42,9 @@ class AgroItem extends AbstractParseManager
         }
     }
 
+    /**
+     * @return void
+     */
     private function parseContent(){
         try {
             $artContents = $this->dom->find(".home__header")[0]->find('.home__lead');

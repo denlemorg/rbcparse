@@ -24,7 +24,7 @@ class ImportNewsCommand extends Command
         parent::__construct();
         $this->parse = $parse;
     }
-
+    
     protected function configure()
     {
         $this
@@ -32,6 +32,17 @@ class ImportNewsCommand extends Command
             ->setDescription('Import news from RBC.RU');
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \PHPHtmlParser\Exceptions\ChildNotFoundException
+     * @throws \PHPHtmlParser\Exceptions\CircularException
+     * @throws \PHPHtmlParser\Exceptions\CurlException
+     * @throws \PHPHtmlParser\Exceptions\NotLoadedException
+     * @throws \PHPHtmlParser\Exceptions\StrictException
+     */
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->parse->updateNews();

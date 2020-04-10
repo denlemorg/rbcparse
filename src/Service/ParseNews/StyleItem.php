@@ -8,11 +8,18 @@ use PHPHtmlParser\Dom;
 
 class StyleItem extends AbstractParseManager
 {
-    public function parseNewsItem(){
+    /**
+     * @return void
+     */
+    public function parseNewsItem(): void
+    {
         $this->parseTitle();
         $this->parseImg();
         $this->parseContent();
     }
+    /**
+     * @return void
+     */
     private function parseTitle(){
         try {
             $artTitle = $this->dom->find(".rbcslider__slide")[0]->find('.article__header')->innerHtml;
@@ -21,7 +28,9 @@ class StyleItem extends AbstractParseManager
             $this->title = "";
         }
     }
-
+    /**
+     * @return void
+     */
     private function parseImg(){
         try {
             $artImg = $this->dom->find(".rbcslider__slide")[0]->find('.article__main-image img');
@@ -30,7 +39,9 @@ class StyleItem extends AbstractParseManager
             $this->image = "";
         }
     }
-
+    /**
+     * @return void
+     */
     private function parseContent(){
         try {
             $artContents = $this->dom->find(".rbcslider__slide")[0]->find('.article__text p');

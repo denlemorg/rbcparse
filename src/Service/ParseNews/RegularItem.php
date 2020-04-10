@@ -8,12 +8,21 @@ use PHPHtmlParser\Dom;
 
 class RegularItem extends AbstractParseManager
 {
-    public function parseNewsItem(){
+    /**
+     * @return void
+     */
+    public function parseNewsItem(): void
+    {
         $this->parseTitle();
         $this->parseImg();
         $this->parseContent();
     }
-    private function parseTitle(){
+
+    /**
+     * @return void
+     */
+    private function parseTitle(): void
+    {
         try {
             $artTitle = $this->dom->find(".js-rbcslider")[0]->find('.article__header .article__header__title .js-slide-title')->innerHtml;
             $this->title = $artTitle;
@@ -22,6 +31,9 @@ class RegularItem extends AbstractParseManager
         }
     }
 
+    /**
+     * @return void
+     */
     private function parseImg(){
         try {
             $artImg = $this->dom->find(".js-rbcslider")[0]->find('.article__text .article__main-image img');
@@ -31,6 +43,9 @@ class RegularItem extends AbstractParseManager
         }
     }
 
+    /**
+     * @return void
+     */
     private function parseContent(){
         try {
             $artContents = $this->dom->find(".js-rbcslider")[0]->find('.article .article__text');
