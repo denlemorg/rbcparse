@@ -29,16 +29,13 @@ class PostRepository extends ServiceEntityRepository
     public function findLastNews()
     {
         return $this->createQueryBuilder('p')
-//            ->orderBy('UNIX_TIMESTAMP( p.`created_at` )', 'DESC')
             ->orderBy('p.position', 'DESC')
             ->setMaxResults(15)
             ->getQuery()
             ->getResult()
             ;
     }
-    // /**
-    //  * @return Post[] Returns an array of Post objects
-    //  */
+    
     /*
     public function findByExampleField($value)
     {
