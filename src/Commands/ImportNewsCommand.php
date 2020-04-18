@@ -24,7 +24,7 @@ class ImportNewsCommand extends Command
         parent::__construct();
         $this->parse = $parse;
     }
-    
+
     protected function configure()
     {
         $this

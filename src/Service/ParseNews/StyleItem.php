@@ -13,9 +13,14 @@ class StyleItem extends AbstractParseManager
      */
     public function parseNewsItem(): void
     {
-        $this->parseTitle();
-        $this->parseImg();
-        $this->parseContent();
+        if ($this->dom->find(".rbcslider__slide")[0]) {
+            $this->parseTitle();
+            $this->parseImg();
+            $this->parseContent();
+        }else{
+            // сделать вывод логов подробно, что ошибка парсинга
+            $this->title = $this->image = $this->body = "";
+        }
     }
     /**
      * @return void

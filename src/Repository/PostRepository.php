@@ -35,7 +35,7 @@ class PostRepository extends ServiceEntityRepository
             ->getResult()
             ;
     }
-    
+
     /*
     public function findByExampleField($value)
     {
