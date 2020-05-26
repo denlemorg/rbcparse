@@ -1,18 +1,18 @@
 <?php
 
 
-namespace App\Service\ParseNews;
+namespace App\Service\NewsCollector\ParseScripts;
 
 use PHPHtmlParser\Dom;
 
-class StyleItem extends AbstractParseManager
+class RegularItem extends MainNewsItem
 {
     /**
      * @return void
      */
     public function parseNewsItem(): void
     {
-        if ($this->dom->find(".rbcslider__slide")[0]) {
+        if ($this->dom->find(".js-rbcslider")[0]) {
             $this->parseTitle();
             $this->parseImg();
             $this->parseContent();
@@ -21,41 +21,50 @@ class StyleItem extends AbstractParseManager
             $this->title = $this->image = $this->body = "";
         }
     }
+
     /**
      * @return void
      */
-    private function parseTitle()
+    private function parseTitle(): void
     {
         try {
-            $artTitle = $this->dom->find(".rbcslider__slide")[0]->find('.article__header')->innerHtml;
-            $this->title = trim($artTitle);
+            $artTitle = $this->dom->find(".js-rbcslider")[0]->
+                find('.article__header .article__header__title .js-slide-title')->innerHtml;
+            $this->title = $artTitle;
         } catch (\Exception $e) {
             $this->title = "";
         }
     }
+
     /**
      * @return void
      */
     private function parseImg()
     {
         try {
-            $artImg = $this->dom->find(".rbcslider__slide")[0]->find('.article__main-image img');
+            $artImg = $this->dom->find(".js-rbcslider")[0]->find('.article__text .article__main-image img');
             $this->image = $artImg->getAttribute('src');
         } catch (\Exception $e) {
-            $this->image = "";
+            $this->image =  "";
         }
     }
+
     /**
      * @return void
      */
     private function parseContent()
     {
         try {
-            $artContents = $this->dom->find(".rbcslider__slide")[0]->find('.article__text p');
+            $artContents = $this->dom->find(".js-rbcslider")[0]->find('.article .article__text');
             $html = "";
+            $domContent = new Dom();
             foreach ($artContents as $content) {
-                $str = strip_tags($content->innerHtml);
-                $html .= "<br />" . trim($str);
+                $domContent->load($content);
+                $artStrings = $domContent->find("p");
+                foreach ($artStrings as $string) {
+                    $str = strip_tags($string->innerHtml);
+                    $html .= "<br />" . trim($str);
+                }
             }
             $this->body = $html;
         } catch (\Exception $e) {

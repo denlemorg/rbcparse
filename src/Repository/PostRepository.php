@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Post;
+use App\Service\NewsCollector\ParseScripts\MainNewsItem;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -14,6 +15,7 @@ use Doctrine\Common\Persistence\ManagerRegistry;
  */
 class PostRepository extends ServiceEntityRepository
 {
+    private $checkPosts = [];
     /**
      * PostRepository constructor.
      * @param ManagerRegistry $registry
@@ -34,6 +36,47 @@ class PostRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult()
             ;
+    }
+
+    /**
+     * @param MainNewsItem[] $news
+     */
+    public function saveNewsWithChecking($news)
+    {
+        $this->checkPosts = $this->findLastNews();
+        foreach ($news as $currentNewsItem) {
+            if (!($currentNewsItem->getTitle() == '' &&
+                $currentNewsItem->getBody() == '' && $currentNewsItem->getImage() == '')) { 
+                $post = $this->checkAndCreateNewsEntity($currentNewsItem->getLink());
+                $post->setTitle($currentNewsItem->getTitle());
+                $post->setBody($currentNewsItem->getBody());
+                $post->setImage($currentNewsItem->getImage());
+                $post->setLink($currentNewsItem->getLink());
+                $post->setCreatedAt($currentNewsItem->getDate());
+                $post->setPosition($currentNewsItem->getPosition());
+
+                $this->getEntityManager()->persist($post);
+            }
+        }
+        $this->getEntityManager()->flush();
+    }
+
+    /**
+     * @param string $title
+     * @return Post
+     */
+    private function checkAndCreateNewsEntity(string $link): Post
+    {
+        $postObj = new Post();
+        if (count($this->checkPosts) > 0) {
+            foreach ($this->checkPosts as $checkPost) {
+                if ($checkPost->getLink() == $link) {
+                    $postObj = $checkPost;
+                    break;
+                }
+            }
+        }
+        return $postObj;
     }
 
     /*

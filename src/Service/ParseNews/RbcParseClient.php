@@ -31,6 +31,7 @@ class RbcParseClient
      * RbcParseClient constructor.
      * @param EntityManagerInterface $em
      */
+
     public function __construct(EntityManagerInterface $em)
     {
         $this->dom = new Dom();
@@ -56,24 +57,22 @@ class RbcParseClient
         $this->dom->load($res);
         $contents = $this->dom->find('.news-feed__wrapper .js-news-feed-list')->find('a.news-feed__item');
 
-        foreach ($contents as $content)
-        {
-
+        foreach ($contents as $content) {
             $link = $content->getAttribute('href');
 
             $resDomContent = self::getUrlContent($link);
             $this->dom->load($resDomContent);
 
-            if (preg_match("/style.rbc/", $link) ) {
+            if (preg_match("/style.rbc/", $link)) {
                 $currentNewsItem = new StyleItem($this->dom, $link);
-            }elseif(preg_match("/agrodigital.rbc/", $link)){
+            } elseif (preg_match("/agrodigital.rbc/", $link)) {
                 $currentNewsItem = new AgroItem($this->dom, $link);
-            }elseif(preg_match("/healthindex.rbc/", $link)
+            } elseif (preg_match("/healthindex.rbc/", $link)
                 || preg_match("/gosmart.rbc/", $link)
                 || preg_match("/savebusiness.rbc/", $link)
-            ){
+            ) {
                 continue;
-            }else {
+            } else {
                 $currentNewsItem = new RegularItem($this->dom, $link);
             }
 
@@ -94,7 +93,6 @@ class RbcParseClient
             $post->setPosition($position);
 
             $this->em->persist($post);
-
         }
         $this->em->flush();
     }
@@ -106,9 +104,9 @@ class RbcParseClient
     private function getPostEntity(string $title): Post
     {
         $postObj = new Post();
-        if (count($this->checkPosts) > 0){
-            foreach($this->checkPosts as $checkPost){
-                if ($checkPost->getTitle() == $title){
+        if (count($this->checkPosts) > 0) {
+            foreach ($this->checkPosts as $checkPost) {
+                if ($checkPost->getTitle() == $title) {
                     $postObj = $checkPost;
                     break;
                 }
@@ -127,7 +125,7 @@ class RbcParseClient
             ->find('.news-feed__item__date .news-feed__item__date-text')->innerHTML;
         $time = explode("&nbsp;", $dateInfo)[1];
         $date = new \DateTime("now");
-        $timeSet = explode(":",$time);
+        $timeSet = explode(":", $time);
         $date->setTime((int)$timeSet[0], (int)$timeSet[1]);
         return $date;
     }

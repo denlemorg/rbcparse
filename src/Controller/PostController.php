@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Post;
+use App\Service\NewsCollector\NewsCollector;
 use App\Service\ParseNews\RbcParseClient;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -40,10 +41,11 @@ class PostController extends AbstractController
      * @throws \PHPHtmlParser\Exceptions\StrictException
      */
 
-    public function index(Request $request, RbcParseClient $parse): Response
+    public function index(Request $request, RbcParseClient $parse, NewsCollector $newsUpdater): Response
     {
-        if ($request->query->get('update') && $request->query->get('update') == '1'){
-            $parse->updateNews();
+        if ($request->query->get('update') && $request->query->get('update') == '1') {
+//            $parse->updateNews();
+            $newsUpdater->updateNews();
         }
         $posts = $this->postRepository->findLastNews();
         return $this->render('post/posts.html.twig', [

@@ -3,7 +3,6 @@
 
 namespace App\Service\ParseNews;
 
-
 use PHPHtmlParser\Dom;
 
 class RegularItem extends AbstractParseManager
@@ -17,7 +16,7 @@ class RegularItem extends AbstractParseManager
             $this->parseTitle();
             $this->parseImg();
             $this->parseContent();
-        }else{
+        } else {
             // сделать вывод логов подробно, что ошибка парсинга
             $this->title = $this->image = $this->body = "";
         }
@@ -29,9 +28,10 @@ class RegularItem extends AbstractParseManager
     private function parseTitle(): void
     {
         try {
-            $artTitle = $this->dom->find(".js-rbcslider")[0]->find('.article__header .article__header__title .js-slide-title')->innerHtml;
+            $artTitle = $this->dom->find(".js-rbcslider")[0]->
+                find('.article__header .article__header__title .js-slide-title')->innerHtml;
             $this->title = $artTitle;
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             $this->title = "";
         }
     }
@@ -39,11 +39,12 @@ class RegularItem extends AbstractParseManager
     /**
      * @return void
      */
-    private function parseImg(){
+    private function parseImg()
+    {
         try {
             $artImg = $this->dom->find(".js-rbcslider")[0]->find('.article__text .article__main-image img');
             $this->image = $artImg->getAttribute('src');
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             $this->image =  "";
         }
     }
@@ -51,13 +52,13 @@ class RegularItem extends AbstractParseManager
     /**
      * @return void
      */
-    private function parseContent(){
+    private function parseContent()
+    {
         try {
             $artContents = $this->dom->find(".js-rbcslider")[0]->find('.article .article__text');
             $html = "";
             $domContent = new Dom();
-            foreach ($artContents as $content)
-            {
+            foreach ($artContents as $content) {
                 $domContent->load($content);
                 $artStrings = $domContent->find("p");
                 foreach ($artStrings as $string) {
@@ -66,9 +67,8 @@ class RegularItem extends AbstractParseManager
                 }
             }
             $this->body = $html;
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             $this->body = "";
         }
     }
-
 }

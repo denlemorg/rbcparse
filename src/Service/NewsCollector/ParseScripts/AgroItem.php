@@ -1,11 +1,11 @@
 <?php
 
 
-namespace App\Service\ParseNews;
+namespace App\Service\NewsCollector\ParseScripts;
 
 use PHPHtmlParser\Dom;
 
-class AgroItem extends AbstractParseManager
+class AgroItem extends MainNewsItem
 {
     /**
      * @return void

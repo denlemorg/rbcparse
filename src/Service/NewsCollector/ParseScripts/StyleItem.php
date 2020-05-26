@@ -1,18 +1,18 @@
 <?php
 
 
-namespace App\Service\ParseNews;
+namespace App\Service\NewsCollector\ParseScripts;
 
 use PHPHtmlParser\Dom;
 
-class AgroItem extends AbstractParseManager
+class StyleItem extends MainNewsItem
 {
     /**
      * @return void
      */
     public function parseNewsItem(): void
     {
-        if ($this->dom->find(".home__header")[0]) {
+        if ($this->dom->find(".rbcslider__slide")[0]) {
             $this->parseTitle();
             $this->parseImg();
             $this->parseContent();
@@ -21,43 +21,42 @@ class AgroItem extends AbstractParseManager
             $this->title = $this->image = $this->body = "";
         }
     }
-
     /**
      * @return void
      */
     private function parseTitle()
     {
         try {
-            $artTitle = $this->dom->find(".home__header")[0]->find('.home__title')->innerHtml;
+            $artTitle = $this->dom->find(".rbcslider__slide")[0]->find('.article__header')->innerHtml;
             $this->title = trim($artTitle);
         } catch (\Exception $e) {
             $this->title = "";
         }
     }
-
     /**
      * @return void
      */
     private function parseImg()
     {
         try {
-            $artImg = $this->dom->find(".home__header")[0]->find('.home__image img.for-desktop');
-            $this->image = "http://agrodigital.rbc.ru". $artImg->getAttribute('src');
+            $artImg = $this->dom->find(".rbcslider__slide")[0]->find('.article__main-image img');
+            $this->image = $artImg->getAttribute('src');
         } catch (\Exception $e) {
-            $this->image =  "";
+            $this->image = "";
         }
     }
-
     /**
      * @return void
      */
     private function parseContent()
     {
         try {
-            $artContents = $this->dom->find(".home__header")[0]->find('.home__lead');
-            $str = strip_tags($artContents->innerHtml);
-            $html = trim($str);
-
+            $artContents = $this->dom->find(".rbcslider__slide")[0]->find('.article__text p');
+            $html = "";
+            foreach ($artContents as $content) {
+                $str = strip_tags($content->innerHtml);
+                $html .= "<br />" . trim($str);
+            }
             $this->body = $html;
         } catch (\Exception $e) {
             $this->body = "";

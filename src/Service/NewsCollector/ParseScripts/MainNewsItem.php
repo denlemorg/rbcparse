@@ -1,12 +1,12 @@
 <?php
 
 
-namespace App\Service\ParseNews;
+namespace App\Service\NewsCollector\ParseScripts;
 
 use DateTime;
 use PHPHtmlParser\Dom;
 
-abstract class AbstractParseManager
+abstract class MainNewsItem
 {
     protected $title;
     protected $image;
@@ -14,18 +14,19 @@ abstract class AbstractParseManager
     protected $link;
     protected $date;
     protected $dom;
+    protected $position;
 
     /**
      * AbstractParseManager constructor.
      * @param Dom $dom
      * @param string $link
      */
-//    public function __construct(Dom $dom, string $link,  DateTime $date)
-    public function __construct(Dom $dom, string $link)
+    public function __construct(Dom $dom, string $link, \DateTime $date)
     {
         $this->link = $link;
         $this->dom = $dom;
-//        $this->date = $date;
+        $this->date = $date;
+        $this->position = $date->format('U');
     }
 
     /**
@@ -63,11 +64,19 @@ abstract class AbstractParseManager
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
     public function getDate()
     {
         return $this->date;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPosition()
+    {
+        return $this->position;
     }
 
     /**
