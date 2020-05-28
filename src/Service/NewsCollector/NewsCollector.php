@@ -38,7 +38,6 @@ class NewsCollector
     public function updateNews(): void
     {
         $news = $this->newsParserAggregator->run();
-//        $news = $this->newsCollector->collectNewsFromSite();
         $this->newsSaver->newsSave($news);
     }
 }
