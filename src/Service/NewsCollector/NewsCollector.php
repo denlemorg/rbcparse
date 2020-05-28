@@ -35,7 +35,7 @@ class NewsCollector
      * @throws \PHPHtmlParser\Exceptions\NotLoadedException
      * @throws \PHPHtmlParser\Exceptions\StrictException
      */
-    public function updateNews(): void
+    public function collectNews(): void
     {
         $news = $this->newsParserAggregator->run();
         $this->newsSaver->newsSave($news);
