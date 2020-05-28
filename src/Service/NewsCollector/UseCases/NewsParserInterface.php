@@ -11,4 +11,3 @@ interface NewsParserInterface
     public function isValidNewsItem(MainNewsItem $currentNewsItem): bool;
     public function getHTMLContent(string $siteUrl): StreamInterface;
 }
-
