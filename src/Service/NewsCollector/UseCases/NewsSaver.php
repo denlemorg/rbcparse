@@ -4,7 +4,7 @@
 namespace App\Service\NewsCollector\UseCases;
 
 use App\Entity\Post;
-use App\Service\NewsCollector\ParseScripts\MainNewsItem;
+use App\Service\NewsCollector\Parsers\MainNewsItem;
 use Doctrine\ORM\EntityManagerInterface;
 
 class NewsSaver

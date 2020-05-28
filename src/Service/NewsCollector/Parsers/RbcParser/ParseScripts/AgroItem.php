@@ -1,9 +1,10 @@
 <?php
 
 
-namespace App\Service\NewsCollector\ParseScripts;
+namespace App\Service\NewsCollector\Parsers\RbcParser\ParseScripts;
 
 use PHPHtmlParser\Dom;
+use App\Service\NewsCollector\Parsers\MainNewsItem;
 
 class AgroItem extends MainNewsItem
 {

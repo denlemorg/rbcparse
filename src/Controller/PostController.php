@@ -32,8 +32,8 @@ class PostController extends AbstractController
      * @Route("/", name="posts")
      * @param Request $request
      * @param RbcParseClient $parse
+     * @param NewsCollector $newsCollector
      * @return Response
-     * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \PHPHtmlParser\Exceptions\ChildNotFoundException
      * @throws \PHPHtmlParser\Exceptions\CircularException
      * @throws \PHPHtmlParser\Exceptions\CurlException
@@ -41,11 +41,11 @@ class PostController extends AbstractController
      * @throws \PHPHtmlParser\Exceptions\StrictException
      */
 
-    public function index(Request $request, RbcParseClient $parse, NewsCollector $newsUpdater): Response
+    public function index(Request $request, RbcParseClient $parse, NewsCollector $newsCollector): Response
     {
         if ($request->query->get('update') && $request->query->get('update') == '1') {
 //            $parse->updateNews();
-            $newsUpdater->updateNews();
+            $newsCollector->updateNews();
         }
         $posts = $this->postRepository->findLastNews();
         return $this->render('post/posts.html.twig', [

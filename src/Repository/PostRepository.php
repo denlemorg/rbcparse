@@ -3,7 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Post;
-use App\Service\NewsCollector\ParseScripts\MainNewsItem;
+use App\Service\NewsCollector\Parsers\MainNewsItem;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -41,28 +41,19 @@ class PostRepository extends ServiceEntityRepository
     /**
      * @param MainNewsItem[] $news
      */
-    public function saveNewsWithChecking($news)
+    public function saveNewsWithChecking($news): void
     {
         $this->checkPosts = $this->findLastNews();
         foreach ($news as $currentNewsItem) {
-            if (!($currentNewsItem->getTitle() == '' &&
-                $currentNewsItem->getBody() == '' && $currentNewsItem->getImage() == '')) { 
-                $post = $this->checkAndCreateNewsEntity($currentNewsItem->getLink());
-                $post->setTitle($currentNewsItem->getTitle());
-                $post->setBody($currentNewsItem->getBody());
-                $post->setImage($currentNewsItem->getImage());
-                $post->setLink($currentNewsItem->getLink());
-                $post->setCreatedAt($currentNewsItem->getDate());
-                $post->setPosition($currentNewsItem->getPosition());
-
-                $this->getEntityManager()->persist($post);
-            }
+            $post = $this->checkAndCreateNewsEntity($currentNewsItem->getLink());
+            $post = $this->updatePostFromMainItem($currentNewsItem, $post);
+            $this->getEntityManager()->persist($post);
         }
         $this->getEntityManager()->flush();
     }
 
     /**
-     * @param string $title
+     * @param string $link
      * @return Post
      */
     private function checkAndCreateNewsEntity(string $link): Post
@@ -78,6 +69,24 @@ class PostRepository extends ServiceEntityRepository
         }
         return $postObj;
     }
+
+    /**
+     * @param MainNewsItem $currentNewsItem
+     * @param Post $post
+     * @return Post
+     */
+    public function updatePostFromMainItem(MainNewsItem $currentNewsItem, Post $post): Post
+    {
+        $post->setTitle($currentNewsItem->getTitle());
+        $post->setBody($currentNewsItem->getBody());
+        $post->setImage($currentNewsItem->getImage());
+        $post->setLink($currentNewsItem->getLink());
+        $post->setCreatedAt($currentNewsItem->getDate());
+        $post->setPosition($currentNewsItem->getPosition());
+        return $post;
+    }
+
+
 
     /*
     public function findByExampleField($value)

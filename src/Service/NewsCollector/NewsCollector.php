@@ -3,22 +3,28 @@
 
 namespace App\Service\NewsCollector;
 
-use App\Service\NewsCollector\UseCases\NewsParser;
+use App\Service\NewsCollector\UseCases\NewsParserAggregator;
 use App\Service\NewsCollector\UseCases\NewsSaver;
 
 class NewsCollector
 {
-    private $newsCollector;
+    /**
+     * @var NewsSaver
+     */
     private $newsSaver;
+    /**
+     * @var NewsParserAggregator
+     */
+    private $newsParserAggregator;
 
     /**
      * NewsCollector constructor.
-     * @param \App\Service\NewsCollector\NewsParser $newsCollector
-     * @param \App\Service\NewsCollector\NewsSaver $newsSaver
+     * @param NewsParserAggregator $newsParserAggregator
+     * @param NewsSaver $newsSaver
      */
-    public function __construct(NewsParser $newsCollector, NewsSaver $newsSaver)
+    public function __construct(NewsParserAggregator $newsParserAggregator, NewsSaver $newsSaver)
     {
-        $this->newsCollector = $newsCollector;
+        $this->newsParserAggregator = $newsParserAggregator;
         $this->newsSaver = $newsSaver;
     }
 
@@ -31,7 +37,8 @@ class NewsCollector
      */
     public function updateNews(): void
     {
-        $news = $this->newsCollector->collectNewsFromSite();
+        $news = $this->newsParserAggregator->run();
+//        $news = $this->newsCollector->collectNewsFromSite();
         $this->newsSaver->newsSave($news);
     }
 }

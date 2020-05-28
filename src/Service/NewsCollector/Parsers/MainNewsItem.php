@@ -1,9 +1,8 @@
 <?php
 
 
-namespace App\Service\NewsCollector\ParseScripts;
+namespace App\Service\NewsCollector\Parsers;
 
-use DateTime;
 use PHPHtmlParser\Dom;
 
 abstract class MainNewsItem

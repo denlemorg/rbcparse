@@ -1,42 +1,33 @@
 <?php
 
 
-namespace App\Service\NewsCollector\UseCases;
+namespace App\Service\NewsCollector\Parsers\RbcParser;
 
-use App\Service\NewsCollector\ParseScripts\MainNewsItem;
-use App\Service\NewsCollector\ParseScripts\AgroItem ;
-use App\Service\NewsCollector\ParseScripts\RegularItem;
-use App\Service\NewsCollector\ParseScripts\StyleItem;
-use GuzzleHttp\Client;
+use App\Service\NewsCollector\Parsers\MainNewsItem;
+use App\Service\NewsCollector\Parsers\RbcParser\ParseScripts\AgroItem ;
+use App\Service\NewsCollector\Parsers\RbcParser\ParseScripts\RegularItem;
+use App\Service\NewsCollector\Parsers\RbcParser\ParseScripts\StyleItem;
+use App\Service\NewsCollector\UseCases\NewsParserAggregator;
 use PHPHtmlParser\Dom;
 
-class NewsParser
+class RbcParser extends NewsParserAggregator
 {
     private const SITE_URL = 'https://www.rbc.ru';
     private const LEFT_COLUMN_SELECTOR = '.news-feed__wrapper .js-news-feed-list';
     private const LIST_NEWS_SELECTOR = 'a.news-feed__item';
     private const DATE_SELECTOR = '.news-feed__item__date .news-feed__item__date-text';
-    private $client;
-    /**
-     * @param Client $client
-     */
-    public function __construct()
-    {
-        $this->client = new Client();
-        $this->dom = new Dom();
-    }
 
     /**
      * Get news from site and return array of news MainNewsItem
      *
-     * @return MainNewsItem[]
+     * @return MainNewsItem[]|null
      * @throws \PHPHtmlParser\Exceptions\ChildNotFoundException
      * @throws \PHPHtmlParser\Exceptions\CircularException
      * @throws \PHPHtmlParser\Exceptions\CurlException
      * @throws \PHPHtmlParser\Exceptions\NotLoadedException
      * @throws \PHPHtmlParser\Exceptions\StrictException
      */
-    public function collectNewsFromSite(): array
+    public function collectNewsFromSite(): ?array
     {
         $firstPageContent = $this->getHTMLContent(self::SITE_URL);
         $this->dom->load($firstPageContent);
@@ -63,22 +54,14 @@ class NewsParser
             } else {
                 $currentNewsItem = new RegularItem($this->dom, $link, $dateCurrentNews);
             }
+
             $currentNewsItem->parseNewsItem();
 
-            $resultNewsList[] = $currentNewsItem;
+            if ($this->isValidNewsItem($currentNewsItem)) {
+                $resultNewsList[] = $currentNewsItem;
+            }
         }
         return $resultNewsList;
-    }
-
-    /**
-     * @param $siteUrl
-     * @return \Psr\Http\Message\StreamInterface
-     */
-    private function getHTMLContent($siteUrl)
-    {
-        $result = $this->client->request('GET', $siteUrl);
-        $body = $result->getBody();
-        return $body;
     }
 
     /**
