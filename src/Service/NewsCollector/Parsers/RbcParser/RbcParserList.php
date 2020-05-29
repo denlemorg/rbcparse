@@ -4,13 +4,13 @@
 namespace App\Service\NewsCollector\Parsers\RbcParser;
 
 use App\Service\NewsCollector\Parsers\MainNewsItem;
-use App\Service\NewsCollector\Parsers\RbcParser\ParseScripts\AgroItem ;
-use App\Service\NewsCollector\Parsers\RbcParser\ParseScripts\RegularItem;
-use App\Service\NewsCollector\Parsers\RbcParser\ParseScripts\StyleItem;
+use App\Service\NewsCollector\Parsers\RbcParser\ParseScripts\ParseAgroItem ;
+use App\Service\NewsCollector\Parsers\RbcParser\ParseScripts\ParseRegularItem;
+use App\Service\NewsCollector\Parsers\RbcParser\ParseScripts\ParseStyleItem;
 use App\Service\NewsCollector\UseCases\NewsParserAggregator;
 use PHPHtmlParser\Dom;
 
-class RbcParser extends NewsParserAggregator
+class RbcParserList extends NewsParserAggregator
 {
     private const SITE_URL = 'https://www.rbc.ru';
     private const LEFT_COLUMN_SELECTOR = '.news-feed__wrapper .js-news-feed-list';
@@ -43,16 +43,16 @@ class RbcParser extends NewsParserAggregator
             $this->dom->load($singleNewsContent);
 
             if (preg_match("/style.rbc/", $link)) {
-                $currentNewsItem = new StyleItem($this->dom, $link, $dateCurrentNews);
+                $currentNewsItem = new ParseStyleItem($this->dom, $link, $dateCurrentNews);
             } elseif (preg_match("/agrodigital.rbc/", $link)) {
-                $currentNewsItem = new AgroItem($this->dom, $link, $dateCurrentNews);
+                $currentNewsItem = new ParseAgroItem($this->dom, $link, $dateCurrentNews);
             } elseif (preg_match("/healthindex.rbc/", $link)
                 || preg_match("/gosmart.rbc/", $link)
                 || preg_match("/savebusiness.rbc/", $link)
             ) {
                 continue;
             } else {
-                $currentNewsItem = new RegularItem($this->dom, $link, $dateCurrentNews);
+                $currentNewsItem = new ParseRegularItem($this->dom, $link, $dateCurrentNews);
             }
 
             $currentNewsItem->parseNewsItem();

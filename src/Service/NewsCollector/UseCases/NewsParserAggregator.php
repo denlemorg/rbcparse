@@ -6,7 +6,7 @@ namespace App\Service\NewsCollector\UseCases;
 use Psr\Http\Message\StreamInterface;
 use App\Service\NewsCollector\Parsers\MainNewsItem;
 use App\Service\NewsCollector\UseCases\NewsParserInterface;
-// use App\Service\NewsCollector\Parsers\RbcParser\RbcParser;
+// use App\Service\NewsCollector\Parsers\RbcParserList\RbcParserList;
 use GuzzleHttp\Client;
 use PHPHtmlParser\Dom;
 
@@ -25,8 +25,8 @@ class NewsParserAggregator implements NewsParserInterface
      * @var string[]
      */
     private $parsers = [
-                "RbcParser"=>"App\Service\NewsCollector\Parsers\RbcParser\RbcParser",
-                "VedomostiParser"=>"App\Service\NewsCollector\Parsers\VedomostiParser\VedomostiParser",
+                "RbcParserList"=>"App\Service\NewsCollector\Parsers\RbcParser\RbcParserList",
+                "VedomostiParserList"=>"App\Service\NewsCollector\Parsers\VedomostiParser\VedomostiParserList",
             ];
 
     /**
