@@ -5,6 +5,7 @@ namespace App\Controller;
 
 use App\Entity\Post;
 use App\Service\NewsCollector\NewsCollector;
+use App\Service\NewsCrawler\Handler;
 use App\Service\ParseNews\RbcParseClient;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,20 +34,21 @@ class PostController extends AbstractController
      * @param Request $request
      * @param RbcParseClient $parse
      * @param NewsCollector $newsCollector
+     * @param Handler $newsCrawler
      * @return Response
-     * @throws \PHPHtmlParser\Exceptions\ChildNotFoundException
-     * @throws \PHPHtmlParser\Exceptions\CircularException
-     * @throws \PHPHtmlParser\Exceptions\CurlException
-     * @throws \PHPHtmlParser\Exceptions\NotLoadedException
-     * @throws \PHPHtmlParser\Exceptions\StrictException
      */
 
-    public function index(Request $request, RbcParseClient $parse, NewsCollector $newsCollector): Response
+    public function index(Request $request, RbcParseClient $parse, NewsCollector $newsCollector, Handler $newsCrawler): Response
     {
+        exit();
+
         if ($request->query->get('update') && $request->query->get('update') == '1') {
 //            $parse->updateNews();
-            $newsCollector->collectNews();
+//            $newsCollector->collectNews();
+            $newsCrawler->collectNews();
         }
+
+
         $posts = $this->postRepository->findLastNews();
         return $this->render('post/posts.html.twig', [
             'posts' => $posts
