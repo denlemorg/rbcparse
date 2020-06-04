@@ -23,8 +23,13 @@ class TimePeriod
      */
     public function __construct(Time $timeStart, Time $timeFinish)
     {
-        $this->timeStart = $timeStart;
-        $this->timeFinish = $timeFinish;
+        if ( $timeFinish->compareTo($timeStart) == 1 ) {
+            $this->timeStart = $timeStart;
+            $this->timeFinish = $timeFinish;
+        }else{
+            $this->timeStart = $timeFinish;
+            $this->timeFinish = $timeStart;
+        }
     }
 
     /**
